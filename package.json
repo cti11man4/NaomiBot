@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/cti11man4/NaomiBot/issues"
   },
-  "homepage": "https://github.com/cti11man4/NaomiBot#readme"
+  "homepage": "https://github.com/cti11man4/NaomiBot#readme",
+  "dependencies": {
+    "discord.js": "^13.3.1"
+  }
 }
