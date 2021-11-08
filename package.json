@@ -1,0 +1,19 @@
+{
+  "name": "naomibot",
+  "version": "1.0.0",
+  "description": "An interactive Discord bot with wit.ai integration.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cti11man4/NaomiBot.git"
+  },
+  "author": "Connor Tillman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cti11man4/NaomiBot/issues"
+  },
+  "homepage": "https://github.com/cti11man4/NaomiBot#readme"
+}
