@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
-const { token } = require('./config.json');
+const { token, owner } = require('./config.json');
+const { waitForDebugger } = require('inspector');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -27,11 +28,18 @@ client.on('interactionCreate', async interaction => {
 
 	if (!command) return;
 
-	try {
-		await command.execute(interaction); // calls execute function for given command
-	} catch (error) {
-		console.error(error);
-		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	if(interaction.commandName == 'shutdown' && interaction.user.id == owner) {
+		await interaction.reply('Shutting down. See you later!');
+		process.exit();
+	}
+	else {
+		try {
+			await command.execute(interaction); // calls execute function for given command
+		} 
+		catch (error) {
+			console.error(error);
+			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		}
 	}
 });
 
