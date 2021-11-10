@@ -15,17 +15,23 @@ module.exports = {
 	async execute(interaction) {
                 let disadv = interaction.options.getBoolean('disadvantage');
                 const hidden = interaction.options.getBoolean('hidden');
-
-                let out = 'Here\'s what I rolled:\n';
-                let rolls = [];
-                rolls.push(Math.floor(Math.random()*20)+1);
-                rolls.push(Math.floor(Math.random()*20)+1);
-                out += '`Rolls: ' + rolls[0] + ', ' + rolls[1] + '`\n';
-                out += '`Outcome: ';
-
-                if(disadv) out += Math.min(rolls[0],rolls[1]) + '`';
-                else out += Math.max(rolls[0],rolls[1]) + '`';
-
-                await interaction.reply({content: out, ephemeral: hidden});
+        
+                interaction.reply({content: advRoll(disadv), ephemeral: hidden});
 	},
+        pipe(disadv) {
+                return advRoll(disadv);
+        },
 };
+
+function advRoll(disadv) {
+        let out = 'Here\'s what I rolled:\n';
+        let rolls = [];
+        rolls.push(Math.floor(Math.random()*20)+1);
+        rolls.push(Math.floor(Math.random()*20)+1);
+        out += '`2d20: ' + rolls[0] + ', ' + rolls[1] + ' => ';
+
+        if(disadv) out += Math.min(rolls[0],rolls[1]) + '`';
+        else out += Math.max(rolls[0],rolls[1]) + '`';
+
+        return out;
+}
