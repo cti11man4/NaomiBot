@@ -7,16 +7,9 @@ module.exports = {
 		.addStringOption(option =>
 			option.setName('dice')
 				.setDescription('Uses standard dice notation.')
-				.setRequired(false))
-		.addStringOption(option =>
-			option.setName('advantage')
-				.setDescription('Roll with advantage or disadvantage.')
-				.setRequired(false)
-				.addChoice('Advantage', 'adv')
-				.addChoice('Disadvantage', 'dis')),
+				.setRequired(false)),
 	async execute(interaction) {
 		let dice = interaction.options.getString('dice');		// get dice value (if any)
-		const adv = interaction.options.getString('advantage');	// get advantage or disadvantage (if any)
 
 		if(dice == null) dice = 'd20';							// check if dice value is null
 		else dice = dice.toLowerCase().replaceAll(' ','');		// remove whitespace
@@ -32,13 +25,14 @@ module.exports = {
 
 		// splits rolls and constants into an array, preserves sign
 		let rolls = [dice.match(/\d*d\d+/i)[0]];
-		console.log(dice.match(/\d*d\d+/i)[0]);
 		for(r of dice.matchAll(/((\+|\-)\d*d\d+)|((\+|\-)\d*)/g)) {
 			if(r[0] != '') rolls.push(r[0]);
 		}
 
 		let out = 'Here\'s what I rolled:\n'					// output string
 		let pos = true;											// indicates positive or negative roll
+		let num = 0;											// number of dice to roll
+		let size = 0;											// size of dice to roll
 		let curr = 0;											// current roll
 		let total = 0;											// current roll total
 		let result = 0;											// total result
@@ -65,10 +59,16 @@ module.exports = {
 			out += '`' + r + ': ';
 			curr = 0;
 			total = 0;
+			num = parseInt(r.substring(0,parseInt(r.indexOf('d'))));
+			size = parseInt(r.substring(1 + parseInt(r.indexOf('d'))));
+
+			if (num > 10000 || size > 10000) {
+				await interaction.reply('I might break if I roll numbers that big.');
+			}
 
 			// generate rolls
-			for(let i = 0; i < parseInt(r.substring(0,parseInt(r.indexOf('d')))); i++) {
-				curr = Math.floor(Math.random() * parseInt(r.substring(1 + parseInt(r.indexOf('d'))))) + 1;
+			for(let i = 0; i < num; i++) {
+				curr = Math.floor(Math.random() * size) + 1;
 				total += curr;
 				if(i > 0) {
 					out += ', ';
@@ -76,6 +76,7 @@ module.exports = {
 				out += curr;
 			}
 
+			// completes line in output
 			if(!(r[0] == '1' && r[1] == 'd')) out += ' => ' + total;
 			out += '`\n';
 
@@ -83,13 +84,13 @@ module.exports = {
 			else result -= total;
 		}
 
+		// adds constant to output and result
 		if(constant != 0) {
 			out += '`Constant: ' + constant + '`\n';
 			result += constant;
 		}
 		out += '`' + dice + ' => ' + result +'`';
 
-		console.log(out);
 		await interaction.reply(out);
 	},
 };
