@@ -7,9 +7,14 @@ module.exports = {
 		.addStringOption(option =>
 			option.setName('dice')
 				.setDescription('Uses standard dice notation.')
+				.setRequired(false))
+		.addBooleanOption(option =>
+			option.setName('hidden')
+				.setDescription('Makes the outcome visible only to the user.')
 				.setRequired(false)),
 	async execute(interaction) {
 		let dice = interaction.options.getString('dice');		// get dice value (if any)
+		const hidden = interaction.options.getBoolean('hidden');
 
 		if(dice == null) dice = 'd20';							// check if dice value is null
 		else dice = dice.toLowerCase().replaceAll(' ','');		// remove whitespace
@@ -91,6 +96,6 @@ module.exports = {
 		}
 		out += '`' + dice + ' => ' + result +'`';
 
-		await interaction.reply(out);
+		await interaction.reply({content: out, ephemeral: hidden});
 	},
 };
